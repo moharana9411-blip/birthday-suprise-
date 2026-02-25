@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Surprise!</title>
+    <style>
+        body { background: #000; color: white; font-family: 'Arial', sans-serif; text-align: center; overflow: hidden; margin: 0; }
+        #quiz-container { padding: 50px 20px; }
+        .btn { background: #ff4757; border: none; padding: 15px 25px; color: white; margin: 10px; border-radius: 20px; font-size: 18px; display: block; width: 80%; margin: 10px auto; }
+        #celebration { display: none; position: relative; height: 100vh; width: 100vw; background: linear-gradient(to bottom, #1a1a2e, #16213e); }
+        .character { position: absolute; width: 120px; bottom: 20px; z-index: 10; }
+        .left { left: 10px; } .right { right: 10px; }
+        .animal { position: absolute; font-size: 40px; animation: float 5s infinite; }
+        @keyframes float { 0% { transform: translateY(100vh); } 100% { transform: translateY(-10vh); } }
+        canvas { position: absolute; top: 0; left: 0; }
+        h1 { font-size: 3rem; color: #feca57; text-shadow: 0 0 10px #ff9f43; margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <h2 id="question-text">Who is your favorite anime hero?</h2>
+    <div id="options">
+        <button class="btn" onclick="checkAnswer(true)">Gojo Sensei</button>
+        <button class="btn" onclick="checkAnswer(false)">Naruto</button>
+        <button class="btn" onclick="checkAnswer(false)">Luffy</button>
+    </div>
+</div>
+
+<div id="celebration">
+    <canvas id="fireworks"></canvas>
+    <h1>HAPPY BIRTHDAY! 🎉</h1>
+    <div class="character left">🤞<br>Gojo</div>
+    <div class="character right">🎀<br>Kaguya</div>
+    <div id="animal-farm"></div>
+</div>
+
+<script>
+    let step = 1;
+    function checkAnswer(isCorrect) {
+        if (step === 1 && isCorrect) {
+            step = 2;
+            document.getElementById('question-text').innerText = "Which rom-com do you like most?";
+            document.getElementById('options').innerHTML = `
+                <button class="btn" onclick="startCelebration()">Kaguya-sama: Love is War</button>
+                <button class="btn" onclick="startCelebration()">Horimiya</button>
+                <button class="btn" onclick="startCelebration()">Toradora</button>
+            `;
+        } else {
+            startCelebration();
+        }
+    }
+
+    function startCelebration() {
+        document.getElementById('quiz-container').style.display = 'none';
+        document.getElementById('celebration').style.display = 'block';
+        createAnimals();
+        initFireworks();
+    }
+
+    function createAnimals() {
+        const farm = document.getElementById('animal-farm');
+        const emojis = ['🐶', '🐱', '🐰', '🐦', '🐼', '🐹'];
+        setInterval(() => {
+            const el = document.createElement('div');
+            el.className = 'animal';
+            el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            el.style.left = Math.random() * 90 + 'vw';
+            el.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            farm.appendChild(el);
+            setTimeout(() => el.remove(), 5000);
+        }, 500);
+    }
+
+    // Simple Firework Logic
+    function initFireworks() {
+        const canvas = document.getElementById('fireworks');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            ctx.beginPath();
+            ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, 3, 0, Math.PI * 2);
+            ctx.fill();
+            requestAnimationFrame(draw);
+        }
+        draw();
+    }
+</script>
+</body>
+</html>
